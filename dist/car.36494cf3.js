@@ -124,6 +124,11 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+// Script created by Benjamin Jaume
+// It uses:
+//     - Types & Coersion
+//     -
+//     - this & Prototype
 var CAR_API = 'https://www.website.car.au';
 
 var Car =
@@ -136,9 +141,22 @@ function () {
     this.carKey = carKey;
     this.owner = owner;
     this.isStarted = false;
+    this.passenger = 0;
+    this.color = '';
+    this.isConvertible = false;
   }
 
   _createClass(Car, [{
+    key: "displaySettings",
+    value: function displaySettings() {
+      console.log("Brand: ".concat(this.brand));
+      console.log("Owner: ".concat(this.owner));
+      this.passenger !== undefined ? console.log("Passenger: ".concat(this.passenger)) : '';
+      this.color !== undefined ? console.log("Color: ".concat(this.color)) : '';
+      this.isConvertible !== undefined ? console.log("Convertible: ".concat(this.isConvertible)) : '';
+      console.log("\n");
+    }
+  }, {
     key: "checkEngine",
     value: function checkEngine() {
       console.log("Car started: ".concat(this.isStarted));
@@ -147,10 +165,10 @@ function () {
     key: "startEngine",
     value: function startEngine(key) {
       if (Number(key) == this.carKey) {
-        console.log('Good to go');
+        console.log("\uD83D\uDE97 Welcome, ".concat(this.owner));
         this.isStarted = true;
       } else {
-        console.log('Who is in the car?');
+        console.log('🚫 Wrong key. Who are you?');
         this.isStarted = false;
       }
 
@@ -160,7 +178,7 @@ function () {
     key: "stopEngine",
     value: function stopEngine() {
       if (this.isStarted !== true) {
-        console.log('STOP. The car is already stopped');
+        console.log('The car is already stopped');
       } else {
         this.isStarted = !this.isStarted;
         this.checkEngine();
@@ -172,12 +190,10 @@ function () {
 }();
 
 function loadSettings(car) {
-  return fakeAjax(CAR_API, car.brand, function (carSettings) {
-    console.log("Brand: ".concat(car.brand));
-    console.log("Passenger: ".concat(carSettings.passenger));
-    console.log("Color: ".concat(carSettings.color));
-    console.log("Convertible: ".concat(carSettings.isConvertible));
-    console.log("\n");
+  fakeAjax(CAR_API, car.brand, function (carSettings) {
+    car.passenger = carSettings.passenger;
+    car.color = carSettings.color;
+    car.isConvertible = carSettings.isConvertible;
   });
 }
 
@@ -186,7 +202,10 @@ var bmw = new Car('bmw', 4321, 'Mickael');
 var tesla = new Car('tesla', 666, 'Axel');
 loadSettings(mercedes);
 loadSettings(bmw);
-loadSettings(tesla); // ***********************
+loadSettings(tesla);
+setTimeout(function () {
+  tesla.displaySettings();
+}, 500); // ***********************
 
 function fakeAjax(url, brand, callback) {
   setTimeout(function () {
@@ -214,7 +233,7 @@ function fakeAjax(url, brand, callback) {
         break;
 
       default:
-        console.log('There is a problem with your request');
+        console.log('There is a problem with the request');
     }
 
     callback({
@@ -222,7 +241,7 @@ function fakeAjax(url, brand, callback) {
       color: color,
       isConvertible: isConvertible
     });
-  }, 500);
+  }, 250);
 }
 },{}],"../../../Users/Benjamin/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];

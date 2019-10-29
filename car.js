@@ -1,3 +1,9 @@
+// Script created by Benjamin Jaume
+// It uses:
+//     - Types & Coersion
+//     -
+//     - this & Prototype
+
 const CAR_API = 'https://www.website.car.au';
 
 class Car {
@@ -6,6 +12,23 @@ class Car {
     this.carKey = carKey;
     this.owner = owner;
     this.isStarted = false;
+
+    this.passenger = 0;
+    this.color = '';
+    this.isConvertible = false;
+  }
+
+  displaySettings() {
+    console.log(`Brand: ${this.brand}`);
+    console.log(`Owner: ${this.owner}`);
+    this.passenger !== undefined
+      ? console.log(`Passenger: ${this.passenger}`)
+      : '';
+    this.color !== undefined ? console.log(`Color: ${this.color}`) : '';
+    this.isConvertible !== undefined
+      ? console.log(`Convertible: ${this.isConvertible}`)
+      : '';
+    console.log(`\n`);
   }
 
   checkEngine() {
@@ -14,10 +37,10 @@ class Car {
 
   startEngine(key) {
     if (Number(key) == this.carKey) {
-      console.log('Good to go');
+      console.log(`🚗 Welcome, ${this.owner}`);
       this.isStarted = true;
     } else {
-      console.log('Who is in the car?');
+      console.log('🚫 Wrong key. Who are you?');
       this.isStarted = false;
     }
     this.checkEngine();
@@ -25,7 +48,7 @@ class Car {
 
   stopEngine() {
     if (this.isStarted !== true) {
-      console.log('STOP. The car is already stopped');
+      console.log('The car is already stopped');
     } else {
       this.isStarted = !this.isStarted;
       this.checkEngine();
@@ -34,12 +57,10 @@ class Car {
 }
 
 function loadSettings(car) {
-  return fakeAjax(CAR_API, car.brand, function(carSettings) {
-    console.log(`Brand: ${car.brand}`);
-    console.log(`Passenger: ${carSettings.passenger}`);
-    console.log(`Color: ${carSettings.color}`);
-    console.log(`Convertible: ${carSettings.isConvertible}`);
-    console.log(`\n`);
+  fakeAjax(CAR_API, car.brand, function(carSettings) {
+    car.passenger = carSettings.passenger;
+    car.color = carSettings.color;
+    car.isConvertible = carSettings.isConvertible;
   });
 }
 
@@ -50,6 +71,10 @@ var tesla = new Car('tesla', 666, 'Axel');
 loadSettings(mercedes);
 loadSettings(bmw);
 loadSettings(tesla);
+
+setTimeout(function() {
+  tesla.displaySettings();
+}, 500);
 
 // ***********************
 
@@ -80,12 +105,13 @@ function fakeAjax(url, brand, callback) {
         break;
 
       default:
-        console.log('There is a problem with your request');
+        console.log('There is a problem with the request');
     }
+
     callback({
       passenger,
       color,
       isConvertible
     });
-  }, 500);
+  }, 250);
 }
